@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCO Tracker</title>
+</head>
+<body>
+    <h1>UCO Token Price</h1>
+    <p id="price"></p>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        fetch("/uco_price/EUR")
+            .then(r => r.json())
+            .then(displayPrice)
+
+        const socket = io();
+        
+        socket.on("uco_price", displayPrice)
+
+        socket.emit("uco_price", "EUR")
+        
+        function displayPrice(price) {
+            document.querySelector("#price").innerText = `${price.price} €`
+        }
+
+    </script>
+</body>
+</html>
