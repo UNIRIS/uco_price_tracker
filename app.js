@@ -13,8 +13,8 @@ const fs = require('fs')
 http.createServer(app).listen(5000)
 
 const server = https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/blockchain.uniris.io/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/blockchain.uniris.io/fullchain.pem')
+    key: fs.readFileSync(process.env["SSL_KEY"]),
+    cert: fs.readFileSync(process.env["SSL_CERT"])
 }, app)
 
 const io = require('socket.io')(server);
