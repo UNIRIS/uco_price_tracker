@@ -2,8 +2,22 @@ const { getUCOPrice } = require('./blockchainio_api')
 const { getBTCPrice } = require('./btc_api')
 
 const app = require('express')()
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const cors = require('cors')
+
+app.use(cors())
+
+const http = require('http')
+const https = require('https')
+const fs = require('fs')
+
+http.createServer(app).listen(5000)
+
+const server = https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/blockchain.uniris.io/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/blockchain.uniris.io/fullchain.pem')
+}, app)
+
+const io = require('socket.io')(server);
 
 const port = process.env["UCO_TRACKER_PORT"] || 3000
 
@@ -47,6 +61,6 @@ app.get('/', (req, res) => {
 });
 
 
-http.listen(port, () => {
+server.listen(port, () => {
     console.log(`Application listening on ${port}`)
 })
