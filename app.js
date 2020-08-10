@@ -25,7 +25,10 @@ const getPrice = function (currency) {
     return new Promise(async (resolve, reject) => {
         try {
             const uco_price = await getUCOPrice()
+            console.log(`UCO Price: ${uco_price}`)
             const btc_price = await getBTCPrice(currency)
+            console.log(`BTC Price in ${currency}: ${btc_price}`)
+            console.log(`UCO Price in ${currency}: ${btc_price * uco_price}`)
             return resolve({ price: btc_price * uco_price, currency: currency })
         }
         catch (e) {
