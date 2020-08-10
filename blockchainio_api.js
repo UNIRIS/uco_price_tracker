@@ -7,7 +7,6 @@ module.exports.getUCOPrice = function() {
             if (err) { 
                 return reject(err)
             }
-    
             resolve(parseFloat(body.price))
         })
     })
