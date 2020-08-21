@@ -11,7 +11,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
-        fetch("/uco_price/EUR")
+        fetch("/uco_price")
             .then(r => r.json())
             .then(displayPrice)
 
@@ -22,7 +22,7 @@
         socket.emit("uco_price", "EUR")
         
         function displayPrice(price) {
-            document.querySelector("#price").innerText = `${price.price} €`
+            document.querySelector("#price").innerText = `${price} €`
         }
 
     </script>
