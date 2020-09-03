@@ -1,5 +1,4 @@
-const { getUCOPrice } = require('./blockchainio_api')
-const { getBTCPrice } = require('./btc_api')
+const { getUCOPrice } = require('./coingecko_api')
 
 const app = require('express')()
 const cors = require('cors')
@@ -24,23 +23,6 @@ const io = require('socket.io')(server);
 
 const port = process.env["UCO_TRACKER_PORT"] || 3000
 
-const searchPrice = function (currency) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const uco_price = await getUCOPrice()
-            console.log(`UCO Price: ${uco_price}`)
-            const btc_price = await getBTCPrice(currency)
-            console.log(`BTC Price in ${currency}: ${btc_price}`)
-            console.log(`UCO Price in ${currency}: ${btc_price * uco_price}`)
-            return resolve(btc_price * uco_price)
-        }
-        catch (e) {
-            console.log(e)
-            return reject(e.message)
-        }
-    })
-}
-
 const log_file = path.join(__dirname, "uco_history_eur")
 
 const putPrice = function(price) {
@@ -64,11 +46,9 @@ const getPrice = function() {
 }
 
 const job = new CronJob('10 * * * * *', async () => {
-    price = await searchPrice("EUR")
+    price = await getUCOPrice()
     await putPrice(price)
-}, null, true, 'Etc/UTC');
-
-job.start();
+}, null, true, 'Etc/UTC',  null, true, null, false);
 
 io.on('connection', (socket) => {
     socket.on("uco_price", () => {
